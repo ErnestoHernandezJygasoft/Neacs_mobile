@@ -10,7 +10,7 @@ import DrawerMenu from './DrawerMenu.js';
 
 
 const menuItems = [
-    { icon: 'home', title: 'Home'},
+    { icon: 'home', title: 'Dashboard'},
 ];
 
 export default class MenuContainer extends React.Component {

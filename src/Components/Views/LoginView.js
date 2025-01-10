@@ -1,42 +1,16 @@
 import React, {useState} from 'react';
 import {  View, Text, StyleSheet, TextInput, Button, ActivityIndicator, Image } from 'react-native';
-import { checkStatus } from '../../Shared/Base';
+import { validateAuth, login } from '../../Shared/authService';
 
 const LoginView = () => {
   const [username, setUsername] = useState(''); 
   const [password, setPassword] = useState('');
-
+  const [errors, setErrors] = useState({});
+  
   const submitForm = () => {
-    console.log('El boton si jala');
-    console.log(username, password);
-    fetch('http://192.168.20.244:44391/api/Users', { 
-      method: 'POST', 
-      headers: {
-         Accept: 'application/json', 
-         'Content-Type': 'application/json', 
-        },
-      body: JSON.stringify({ username, password, }), }) 
-    .then(response =>{
-      console.log('Respuesta del servidor:', response); 
-      if (!response.ok) { 
-        throw new Error('Error en la solicitud: ' + response.statusText); 
-      } 
-      return response.json();
-    }) 
-    .then(data => {
-      console.log('Success:', data);
-      if (data.valid) { 
-        navigation.navigate('home'); 
-      } else { 
-         alert('Credenciales inválidas'); 
-      }
-    })
-    .catch(error => { 
-      console.error('Error en la solicitud:', error); 
-      error.json().then(err => { 
-        console.error('Detalles del error:', err); 
-      }); 
-    });
+    if(validateAuth(username, password, setErrors)){
+      login(username, password)
+    } 
   };
 
   return (
@@ -52,9 +26,11 @@ const LoginView = () => {
           <TextInput
             placeholder="Número de Nómina"
             style={styles.input}
+            keyboardType = 'numeric'
             onChangeText={setUsername}
             autoCapitalize="none"
           />
+          {errors.username && <Text style={styles.errorText}>{errors.username}</Text>}
         </View>
         <View style={styles.inputContainer}>
           <TextInput
@@ -64,6 +40,7 @@ const LoginView = () => {
             secureTextEntry
             autoCapitalize="none"
           />
+          {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
         </View>
         <View style={styles.linkContainer}>
           <Text style={styles.linkText}>¿Olvidó la contraseña?</Text>
@@ -74,10 +51,6 @@ const LoginView = () => {
         />
       </View>
     </View>
-    // Error de login
-    // <View style={styles.errorContainer}>
-    // <Text style={styles.errorText}>Cuenta y/o contraseña incorrectos.</Text>
-    // </View>
     // Indicador de carga 
     // <ActivityIndicator size="small" color="#0000ff" style={styles.loading} />
   );
@@ -142,17 +115,11 @@ const styles = StyleSheet.create({
   },
   submitButton: {
     borderRadius: 10
-  }
-  // errorContainer: {
-  //   marginBottom: 20,
-  //   backgroundColor: '#f8d7da',
-  //   padding: 10,
-  //   borderRadius: 5,
-  // },
-  // errorText: {
-  //   color: '#721c24',
-  //   fontWeight: 'bold',
-  // },
+  },
+  errorText: {
+    color: 'red',
+    fontWeight: 'bold',
+  },
   // loading: {
   //   marginTop: 10,
   // },
