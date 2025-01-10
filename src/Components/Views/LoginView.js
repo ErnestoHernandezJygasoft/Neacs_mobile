@@ -7,15 +7,22 @@ const LoginView = () => {
   const [password, setPassword] = useState('');
 
   const submitForm = () => {
-    fetch('https://localhost:44391/api', { 
+    console.log('El boton si jala');
+    console.log(username, password);
+    fetch('http://192.168.20.244:44391/api/Users', { 
       method: 'POST', 
       headers: {
          Accept: 'application/json', 
          'Content-Type': 'application/json', 
         },
       body: JSON.stringify({ username, password, }), }) 
-    .then(response => 
-      checkStatus(response.json())) 
+    .then(response =>{
+      console.log('Respuesta del servidor:', response); 
+      if (!response.ok) { 
+        throw new Error('Error en la solicitud: ' + response.statusText); 
+      } 
+      return response.json();
+    }) 
     .then(data => {
       console.log('Success:', data);
       if (data.valid) { 
@@ -23,8 +30,13 @@ const LoginView = () => {
       } else { 
          alert('Credenciales inválidas'); 
       }
-    }) 
-    .catch((error) => { console.error('Error:', error); });
+    })
+    .catch(error => { 
+      console.error('Error en la solicitud:', error); 
+      error.json().then(err => { 
+        console.error('Detalles del error:', err); 
+      }); 
+    });
   };
 
   return (
