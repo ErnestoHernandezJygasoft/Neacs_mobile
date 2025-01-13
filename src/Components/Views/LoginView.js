@@ -1,15 +1,17 @@
 import React, {useState} from 'react';
 import {  View, Text, StyleSheet, TextInput, Button, ActivityIndicator, Image } from 'react-native';
 import { validateAuth, login } from '../../Shared/authService';
+import { useNavigation } from '@react-navigation/native';
 
 const LoginView = () => {
+  const navigation = useNavigation();
   const [username, setUsername] = useState(''); 
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
   
   const submitForm = () => {
     if(validateAuth(username, password, setErrors)){
-      login(username, password)
+      login(username, password, navigation)
     } 
   };
 
@@ -45,7 +47,7 @@ const LoginView = () => {
         <View style={styles.linkContainer}>
           <Text style={styles.linkText}>¿Olvidó la contraseña?</Text>
         </View>
-        <Button style={styles.submitButton}
+        <Button
           title="Continuar"
           onPress={submitForm}
         />
@@ -112,9 +114,6 @@ const styles = StyleSheet.create({
   linkText: {
     color: '#007bff',
     textDecorationLine: 'underline',
-  },
-  submitButton: {
-    borderRadius: 10
   },
   errorText: {
     color: 'red',

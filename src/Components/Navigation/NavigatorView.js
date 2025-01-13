@@ -14,7 +14,6 @@ export default class NavigationView extends React.Component {
         super();
 
         const Drawer = createDrawerNavigator();
-
         this.state = { Drawer };
 
     }
