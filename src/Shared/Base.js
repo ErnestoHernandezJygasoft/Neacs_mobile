@@ -2,6 +2,7 @@ export function checkStatus(response) {
     if (response.status >= 200 && response.status < 300) {
         return response;
     } else {
+        //Check statusText functionality, message not showing
         const error = new Error(`HTTP Error ${response.statusText}`);
         error.status = response.statusText;
         error.response = response;
@@ -9,8 +10,7 @@ export function checkStatus(response) {
         throw error;
     }
 }
-
-//NUEVO METODO FETCH created on Jan/14/25
+// METODO FETCH created on Jan/14/25
 export async function fetchFromAPI(URL, method, requestBody) {
   try {
     const response = await fetch(URL, {
@@ -29,7 +29,20 @@ export async function fetchFromAPI(URL, method, requestBody) {
     throw error;
   }
 }
-  
+
+export async function get(URL){
+    try {
+        const response = await fetch(URL,{
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        })
+        checkStatus(response);
+        data = await response.json();
+        return data;
+    } catch (error) {
+        throw error
+    }
+}
 
   
   

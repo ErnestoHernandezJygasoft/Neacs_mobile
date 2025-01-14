@@ -11,6 +11,15 @@ import DrawerMenu from './DrawerMenu.js';
 
 const menuItems = [
     { icon: 'home', title: 'Dashboard'},
+    { icon: 'home', title: 'Attendance'},
+    { icon: 'home', title: 'Employees'},
+    { icon: 'home', title: 'Groups'},
+    { icon: 'home', title: 'Plants'},
+    { icon: 'home', title: 'Roles'},
+    { icon: 'home', title: 'Shifts'},
+    { icon: 'home', title: 'Users'},
+    { icon: 'home', title: 'Workareas'},
+    { icon: 'home', title: 'Workschemes'},
 ];
 
 export default class MenuContainer extends React.Component {

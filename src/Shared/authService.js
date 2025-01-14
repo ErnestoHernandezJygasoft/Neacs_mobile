@@ -24,7 +24,7 @@ export function validateAuth(username, password, setErrors) {
   return validityStatus;
 };
 
-//METODO NUEVO PARA EL LOGIN created on Jan/14/25 (currently working)
+//METODO PARA EL LOGIN created on Jan/14/25 (currently working)
 export async function login(username, password, navigation) {
   try {
     const response = await fetchFromAPI('http://192.168.20.244:5000/api/Users', 'POST', { username, password });
