@@ -24,35 +24,37 @@ export function validateAuth(username, password, setErrors) {
   return validityStatus;
 };
 
-//METODO NUEVO PARA EL LOGIN In Progress 13/Ene/25
-// export function login(username, password, navigation){
-//   console.log('Si entra el metodo login, usuario: ' + username + ', password: ' + password);
-//   var status = fetchFromAPI('http://192.168.20.244:5000/api/Users', 'POST', {username, password});
-//   //aqui no va a retornar un response porque la solicitud no se puede realizar a la API, hay que revisar CORS para resolver el problema
-//   if (status.response === 'Success'){
-//     navigation.navigate('home');
-//   } else {
-//     alert('Invalid credentials');
-//   }
-// }
-
-// METODO ANTERIOR PARA LOGIN Currently Working 10/Ene/25
-export function login(username, password, navigation){
-  fetch('http://192.168.20.244:5000/api/Users', {
-    method: 'POST',
-    headers: {
-      //  Accept: 'application/json',
-       'Content-Type': 'application/json',
-      },
-    body: JSON.stringify({ username, password }), })
-  .then(response =>{
-    try {
-      checkStatus(response);
-      if (response){
-        navigation.navigate('Home');
-      }
-    } catch (error) {
-        Alert("Invalid credentials")
+//METODO NUEVO PARA EL LOGIN created on Jan/14/25 (currently working)
+export async function login(username, password, navigation) {
+  try {
+    const response = await fetchFromAPI('http://192.168.20.244:5000/api/Users', 'POST', { username, password });
+    if (response) {
+      navigation.navigate('Dashboard');
+    } else {
+      throw error;
     }
-  })
+  } catch (error) {
+    console.error(error);
+  }
 }
+// METODO ANTERIOR PARA LOGIN created on Jan/10/25
+// export function login(username, password, navigation){
+//   fetch('http://192.168.20.244:5000/api/Users', {
+//     method: 'POST',
+//     headers: {
+//       //  Accept: 'application/json',
+//        'Content-Type': 'application/json',
+//       },
+//     body: JSON.stringify({ username, password }), 
+//   })
+//   .then(response =>{
+//     try {
+//       checkStatus(response);
+//       if (response){
+//         navigation.navigate('Dashboard');
+//       }
+//     } catch (error) {
+//         Alert("Invalid credentials")
+//     }
+//   })
+// }

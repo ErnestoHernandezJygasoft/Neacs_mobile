@@ -38,7 +38,7 @@ export default class NavigationView extends React.Component {
 
         const drawerContainer = [
             { name: 'Login', component: ToLogin },
-            { name: 'Home', component: ToHome },
+            { name: 'Dashboard', component: ToHome },
         ];
 
         return <NavigationContainer>

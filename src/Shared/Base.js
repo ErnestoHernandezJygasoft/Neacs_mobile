@@ -10,27 +10,26 @@ export function checkStatus(response) {
     }
 }
 
-export function parseJSON(response) {
-    return response.json()
+//NUEVO METODO FETCH created on Jan/14/25
+export async function fetchFromAPI(URL, method, requestBody) {
+  try {
+    const response = await fetch(URL, {
+      method: method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(requestBody)
+    });
+    checkStatus(response);
+    const contentType = response.headers.get('Content-Type');
+    if (contentType && contentType.includes('application/json')) {
+      const data = await response.json();
+      console.log("Datos procesados de la respuesta (JSON):", data);
+      return data;
+    } 
+  } catch (error) {
+    throw error;
+  }
 }
+  
 
-//NUEVO METODO FETCH In progress 13/Ene/25
-export async function fetchFromAPI(URL, method, body){
-    try {
-        const response = await fetch(URL, {
-            method: method,
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(body)
-        });
-        checkStatus(response);
-        const data = await response.json();
-        return ('Success', data);
-    } catch (error) {
-        console.error('Error en la solicitud:', error);
-        error.json().then(err => {
-            console.error('Detalles del error:', err);
-        });
-    }
-}
+  
+  
