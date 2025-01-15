@@ -7,19 +7,19 @@ import { CommonActions } from '@react-navigation/native';
 
 // Components
 import DrawerMenu from './DrawerMenu.js';
-
+import { Icon } from 'react-native-elements';
 
 const menuItems = [
-    { icon: 'home', title: 'Dashboard'},
-    { icon: 'home', title: 'Attendance'},
-    { icon: 'home', title: 'Employees'},
-    { icon: 'home', title: 'Groups'},
-    { icon: 'home', title: 'Plants'},
-    { icon: 'home', title: 'Roles'},
-    { icon: 'home', title: 'Shifts'},
-    { icon: 'home', title: 'Users'},
-    { icon: 'home', title: 'Workareas'},
-    { icon: 'home', title: 'Workschemes'},
+    { icon: 'home', title: 'Dashboard' },
+    { icon: 'attendance', title: 'Attendance' },
+    { icon: 'employees', title: 'Employees' },
+    { icon: 'groups', title: 'Groups' },
+    { icon: 'plants', title: 'Plants' },
+    { icon: 'roles', title: 'Roles' },
+    { icon: 'shifts', title: 'Shifts' },
+    { icon: 'users', title: 'Users' },
+    { icon: 'workareas', title: 'Workareas' },
+    { icon: 'workschemes', title: 'Workschemes' },
 ];
 
 export default class MenuContainer extends React.Component {
@@ -71,7 +71,7 @@ export default class MenuContainer extends React.Component {
             />
             <ScrollView>
                 <View style={{ flex: 1 }}>
-                    {menuItems.map((element, index) => {
+                {menuItems.map((element, index) => {
                         const { icon, title } = element;
                         return <DrawerMenu key={index} icon={icon} title={title} navigation={() => navigation.navigate(title)} />
                     })}
