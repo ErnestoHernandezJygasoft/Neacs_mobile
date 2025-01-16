@@ -7,19 +7,18 @@ import { CommonActions } from '@react-navigation/native';
 
 // Components
 import DrawerMenu from './DrawerMenu.js';
-import { Icon } from 'react-native-elements';
 
 const menuItems = [
     { icon: 'home', title: 'Dashboard' },
-    { icon: 'attendance', title: 'Attendance' },
-    { icon: 'employees', title: 'Employees' },
-    { icon: 'groups', title: 'Groups' },
-    { icon: 'plants', title: 'Plants' },
-    { icon: 'roles', title: 'Roles' },
-    { icon: 'shifts', title: 'Shifts' },
-    { icon: 'users', title: 'Users' },
-    { icon: 'workareas', title: 'Workareas' },
-    { icon: 'workschemes', title: 'Workschemes' },
+    { icon: 'align-vertical-bottom', title: 'Attendance' },
+    { icon: 'account-box-multiple', title: 'Employees' },
+    { icon: 'account-group', title: 'Groups' },
+    { icon: 'map-marker-radius', title: 'Plants' },
+    { icon: 'account-child', title: 'Roles' },
+    { icon: 'alarm', title: 'Shifts' },
+    { icon: 'account-lock', title: 'Users' },
+    { icon: 'application-edit-outline', title: 'Workareas' },
+    { icon: 'application-edit', title: 'Workschemes' },
 ];
 
 export default class MenuContainer extends React.Component {
@@ -67,7 +66,7 @@ export default class MenuContainer extends React.Component {
         return <View style={{ flex: 1, backgroundColor: '#fff' }}>
             <Header style={{ flex: 1 }}
                 centerComponent={<Text style={{ fontSize: 18, fontWeight: 'bold', color: '#fff' }}>Menú</Text>}
-                backgroundColor='#131d64'
+                backgroundColor='#1e1e3f'
             />
             <ScrollView>
                 <View style={{ flex: 1 }}>

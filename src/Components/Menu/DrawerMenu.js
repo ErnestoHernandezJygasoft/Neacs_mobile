@@ -14,7 +14,7 @@ export default class DrawerMenu extends React.Component {
         return <TouchableOpacity onPress={navigation}>
             <View style={{ flexDirection: 'row', justifyContent: 'center', marginLeft: 10, marginVertical: 15 }}>
                 <View style={{ flex: 1.5, justifyContent: 'center' }}>
-                    <Icon size={15} name={icon} />
+                    <Icon size={15} name={icon} color="#000"/>
                 </View>
                 <View style={{ flex: 8.5, justifyContent: 'center' }}>
                     <Text style={{ fontSize: 13 }}>{title}</Text>

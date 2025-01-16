@@ -123,9 +123,9 @@ export default class NavigationView extends React.Component {
                 screenOptions={({ route }) => {
                     const { name } = route;
                     return {
-                        headerShown: name != 'Login',
-                        swipeEnabled: name != 'Login',
-                        headerStyle: { backgroundColor: '#131d64' },
+                        // headerShown: name != 'Login',
+                        // swipeEnabled: name != 'Login',
+                        headerStyle: { backgroundColor: '#1e1e3f' },
                         headerTintColor: '#fff'
                     }
                 }}
