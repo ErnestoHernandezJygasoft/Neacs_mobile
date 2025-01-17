@@ -1,13 +1,31 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, Modal, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, TextInput, StyleSheet, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Table, TableWrapper, Row } from 'react-native-reanimated-table';
+
+//Imports para las funcionalidades de edicion
+import {Button, Modal, TouchableOpacity, Text} from 'react-native';
 
 const EmployeesView = () => {
+  const [search, setSearch] = useState('');
+  const handleInputChange = (field, value) => {
+    if (field === 'search') {
+      setSearch(value);
+    }
+  };
+  const state = {
+    tableHead: ['Head', 'Head2', 'Head3', 'Head4'],
+    widthArr:[80,80,80,80]
+  }
+  const tableData = [
+    ['John', 'Doe', 'Manager', 'HR'],
+    ['Jane', 'Smith', 'Developer', 'IT'],
+    ['Mike', 'Johnson', 'Designer', 'Marketing'],
+  ];
   //AQUI IRIA MODALCONFIG
-
-  
   return (
-    <View style={styles.card}>
+    <View>
+      <View style={styles.card}>
       <View style={styles.cardHeader}>
         <View style={styles.cardTitle}>
           <Icon style={styles.searchIcon} name="magnify" size={20} color="#000"/>
@@ -17,17 +35,34 @@ const EmployeesView = () => {
             onChangeText={(text) => handleInputChange('search', text)}
           />
         </View>
-        {/* <View style={styles.cardToolbar}>
-          <Button title="Create New" onPress={() => setShowModal(true)} />
-        </View> */}
-      </View>
-
-      <View style={styles.cardBody}>
-        {/* DATATABLE*/}
       </View>
       
+
       {/* MODAL */}
 
+      </View>
+      <ScrollView horizontal={true} contentContainerStyle={styles.card}>
+          <View>
+            <Table borderStyle={{borderWidth: 1}}>
+              <Row data={state.tableHead} widthArr={state.widthArr} style={styles.tableHeader} textStyle={styles.text}/>
+            </Table>
+            <ScrollView style={styles.dataWrapper}>
+              <Table borderStyle={{borderWidth: 1}}>
+                {
+                  tableData.map((rowData, index) => (
+                    <Row
+                      key={index}
+                      data={rowData}
+                      widthArr={state.widthArr}
+                      style={[styles.row, index%2]}
+                      textStyle={styles.text}
+                    />
+                  ))
+                }
+              </Table>
+            </ScrollView>
+          </View>
+        </ScrollView>
     </View>
   );
 };
@@ -62,9 +97,12 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   cardBody: {
-    marginBottom: 16,
+    flex:1
   },
-  
+  tableHeader: { height: 50, backgroundColor: '#537791' },
+  text: { textAlign: 'center', fontWeight: '100' },
+  dataWrapper: { marginTop: -1 },
+  row: { height: 40, justifyContent: 'center'}
 });
 
 export default EmployeesView;
@@ -77,13 +115,6 @@ export default EmployeesView;
   //   id: '',
   // });
 
-  // const handleInputChange = (field, value) => {
-  //   setFormData({
-  //     ...formData,
-  //     [field]: value,
-  //   });
-  // };
-
   // const handleSubmit = () => {
   //   setIsLoading(true);
   //   setTimeout(() => {
@@ -91,6 +122,10 @@ export default EmployeesView;
   //     setShowModal(false);
   //   }, 2000);
   // };
+//MODAL BUTTON
+{/* <View style={styles.cardToolbar}>
+          <Button title="Create New" onPress={() => setShowModal(true)} />
+        </View> */}
 //MODAL STYLES
   // modalBackground: {
   //   flex: 1,
@@ -142,7 +177,7 @@ export default EmployeesView;
           placeholder="File del empleado"
           value={formData.id}
           onChangeText={(text) => handleInputChange('id', text)}
-        />              
+        />
         <View style={styles.modalFooter}>
           <Button title="Cancelar" onPress={() => setShowModal(false)} />
           <Button
@@ -155,4 +190,4 @@ export default EmployeesView;
     </View>
   </View>
 </Modal> */}
-      
+
