@@ -12,11 +12,12 @@ import AttendanceView from '../Views/AttendanceView.js';
 import EmployeesView from '../Views/EmployeesView.js';
 import GroupsView from '../Views/GroupsView.js';
 import PlantsView from '../Views/PlantsView.js';
-import RolesView from '../Views/RolesView.js';
 import ShiftView from '../Views/ShiftView.js';
 import UsersView from '../Views/UsersView.js';
 import WorkareasView from '../Views/WorkareasView.js';
 import WorkschemesView from '../Views/WorkschemesView.js';
+// import RolesView from '../Views/RolesView.js';
+
 
 export default class NavigationView extends React.Component {
     constructor() {
@@ -45,9 +46,7 @@ export default class NavigationView extends React.Component {
     PlantsScreen({navigation, route}){
         return <PlantsView navigation={navigation} route={route}/>
     }
-    RolesScreen({navigation, route}){
-        return <RolesView navigation={navigation} route={route}/>
-    }
+    
     ShiftScreen({navigation, route}){
         return <ShiftView navigation={navigation} route={route}/>
     }
@@ -60,6 +59,9 @@ export default class NavigationView extends React.Component {
     WorkschemesScreen({navigation, route}){
         return <WorkschemesView navigation={navigation} route={route}/>
     }
+    // RolesScreen({navigation, route}){
+    //     return <RolesView navigation={navigation} route={route}/>
+    // }
 
     render() {
         const { Drawer} = this.state;
@@ -83,9 +85,6 @@ export default class NavigationView extends React.Component {
         const ToPlants = (props) => {
             return this.PlantsScreen(props);
         };
-        const ToRoles = (props) => {
-            return this.RolesScreen(props);
-        };
         const ToShifts = (props) => {
             return this.ShiftScreen(props);
         };
@@ -98,6 +97,9 @@ export default class NavigationView extends React.Component {
         const ToWorkschemes = (props) => {
             return this.WorkschemesScreen(props);
         };
+        // const ToRoles = (props) => {
+        //     return this.RolesScreen(props);
+        // };
 
         const drawerContainer = [
             { name: 'Login', component: ToLogin },
@@ -106,11 +108,12 @@ export default class NavigationView extends React.Component {
             { name: 'Employees', component: ToEmployees },
             { name: 'Groups', component: ToGroups },
             { name: 'Plants', component: ToPlants },
-            { name: 'Roles', component: ToRoles },
             { name: 'Shifts', component: ToShifts },
             { name: 'Users', component: ToUsers },
             { name: 'Workareas', component: ToWorkareas },
             { name: 'Workschemes', component: ToWorkschemes },
+            // { name: 'Roles', component: ToRoles },
+
         ];
 
         return <NavigationContainer>

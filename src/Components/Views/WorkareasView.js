@@ -1,11 +1,62 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, Modal, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, TextInput, Text, StyleSheet, ScrollView, FlatList, ActivityIndicator} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { getPagin } from '../../Shared/Base';
 
 const WorkareasView = () => {
-  //AQUI IRIA MODAL CONFIG
+  //Barra de busqueda
+  const [search, setSearch] = useState('');
+  const [filteredData, setFilteredData] = useState([]);
+  const handleInputChange = (field, value) => {
+    if (field === 'search') {
+      setSearch(value);
+    }
+  };
+  //Datatable
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const recordsPerPage = 10; 
+
+  //Carga de datos
+  useEffect(() => {
+    getPagin('http://192.168.20.244:5000/api/WorkAreas',page, setTotalPages, setData, setLoading, recordsPerPage);
+    }, [page]
+  );
+
+  // Filtrar los datos según la búsqueda
+  useEffect(() => {
+    if (search.trim() === '') {
+      setFilteredData(data); 
+    } else {
+      const filtered = data.filter((item) =>
+        item.id.toLowerCase().includes(search.toLowerCase()) ||
+        item.name.toLowerCase().includes(search.toLowerCase())
+      );
+      setFilteredData(filtered); 
+    }
+  }, [search, data]);
+  const loadMore = () => {
+    if (page < totalPages) {
+      setPage(page + 1);
+    }
+  };
+
+  //Parametros a mostrar
+  const renderItem = ({ item }) => (
+    <View style={styles.row}>
+      <Text style={styles.cell}>{item.name}</Text>
+      <Text style={styles.cell}>{item.idPlant}</Text>
+    </View>
+  );
+
+  //AQUI IRIA MODALCONFIG
+  
   return (
-    <View style={styles.card}>
+    <View>
+      {/* Header */}
+      <View style={styles.card}>
       <View style={styles.cardHeader}>
         <View style={styles.cardTitle}>
           <Icon style={styles.searchIcon} name="magnify" size={20} color="#000"/>
@@ -15,16 +66,20 @@ const WorkareasView = () => {
             onChangeText={(text) => handleInputChange('search', text)}
           />
         </View>
-        {/* <View style={styles.cardToolbar}>
-          <Button title="Create New" onPress={() => setShowModal(true)} />
-        </View> */}
       </View>
-
-      <View style={styles.cardBody}>
-        {/* DATATABLE */}
-      </View>
-      
       {/* MODAL */}
+      </View>
+      {/* Datatable */}
+      <View style={styles.card}>
+            <FlatList
+              data={filteredData}
+              renderItem={renderItem}
+              keyExtractor={(item) => item.id.toString()}
+              onEndReached={loadMore}
+              onEndReachedThreshold={0.5}
+              ListFooterComponent={loading ? <ActivityIndicator size="large" color="#0000ff" /> : null}
+            />
+          </View>
     </View>
   );
 };
@@ -45,16 +100,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  icon: {
-    marginRight: 8,
-  },
   searchInput: {
     height: 40,
     borderColor: '#ccc',
     borderWidth: 1,
     width: 180 ,
     margin: 10,
-    paddingLeft: 40,
+    paddingLeft: 10,
     borderRadius: 4,
   },
   cardToolbar: {
@@ -62,12 +114,23 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   cardBody: {
-    marginBottom: 16,
+    flex:1
   },
-  
+  row: { 
+    flexDirection: 'row', 
+    padding: 10, 
+    borderBottomWidth: 1, 
+    borderBottomColor: '#ccc' 
+  },
+  cell: { 
+    flex: 1, 
+    textAlign: 'center' 
+  },
 });
 
 export default WorkareasView;
+
+//-------------------- Funciones de edicion --------------------------------
 //MODAL CONFIG
   // const [showModal, setShowModal] = useState(false);
   // const [isLoading, setIsLoading] = useState(false);

@@ -14,11 +14,11 @@ const menuItems = [
     { icon: 'account-box-multiple', title: 'Employees' },
     { icon: 'account-group', title: 'Groups' },
     { icon: 'map-marker-radius', title: 'Plants' },
-    { icon: 'account-child', title: 'Roles' },
     { icon: 'alarm', title: 'Shifts' },
     { icon: 'account-lock', title: 'Users' },
     { icon: 'application-edit-outline', title: 'Workareas' },
     { icon: 'application-edit', title: 'Workschemes' },
+    // { icon: 'account-child', title: 'Roles' },
 ];
 
 export default class MenuContainer extends React.Component {

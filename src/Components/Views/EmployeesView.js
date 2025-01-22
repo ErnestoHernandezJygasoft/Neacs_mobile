@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, Text, StyleSheet, ScrollView, FlatList, ActivityIndicator} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Table, Row } from 'react-native-reanimated-table';
-import EmployeeService from '../../Shared/employeeService';
+import { getPagin } from '../../Shared/Base';
 
 const EmployeesView = () => {
   //Barra de busqueda
@@ -22,7 +21,7 @@ const EmployeesView = () => {
 
   //Carga de datos
   useEffect(() => {
-      EmployeeService.getPagin(page, setTotalPages, setData, setLoading, recordsPerPage);
+    getPagin('http://192.168.20.244:5000/api/Employee',page, setTotalPages, setData, setLoading, recordsPerPage);
     }, [page]
   );
 
@@ -136,7 +135,8 @@ export default EmployeesView;
 
 
 
-// //Imports para las funcionalidades de edicion
+//-------------------- Funciones de edicion --------------------------------
+
 // // import {Button, Modal, TouchableOpacity, Text} from 'react-native';
 // //MODAL CONFIG
 //   // const [showModal, setShowModal] = useState(false);
