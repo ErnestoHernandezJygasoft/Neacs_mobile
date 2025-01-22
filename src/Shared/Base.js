@@ -30,6 +30,7 @@ export async function fetchFromAPI(URL, method, requestBody) {
   }
 }
 
+//Funcion get para volumenes de datos chicos created on Jan/14/25
 export async function get(URL){
     try {
         const response = await fetch(URL,{
@@ -43,6 +44,7 @@ export async function get(URL){
         throw error
     }
 }
+
 
   
   

@@ -1,30 +1,65 @@
-import React, { useState } from 'react';
-import { View, TextInput, StyleSheet, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, TextInput, Text, StyleSheet, ScrollView, FlatList, ActivityIndicator} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Table, TableWrapper, Row } from 'react-native-reanimated-table';
-
-//Imports para las funcionalidades de edicion
-import {Button, Modal, TouchableOpacity, Text} from 'react-native';
+import { Table, Row } from 'react-native-reanimated-table';
+import EmployeeService from '../../Shared/employeeService';
 
 const EmployeesView = () => {
+  //Barra de busqueda
   const [search, setSearch] = useState('');
+  const [filteredData, setFilteredData] = useState([]);
   const handleInputChange = (field, value) => {
     if (field === 'search') {
       setSearch(value);
     }
   };
-  const state = {
-    tableHead: ['Head', 'Head2', 'Head3', 'Head4'],
-    widthArr:[80,80,80,80]
-  }
-  const tableData = [
-    ['John', 'Doe', 'Manager', 'HR'],
-    ['Jane', 'Smith', 'Developer', 'IT'],
-    ['Mike', 'Johnson', 'Designer', 'Marketing'],
-  ];
+  //Datatable
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const recordsPerPage = 10; 
+
+  //Carga de datos
+  useEffect(() => {
+      EmployeeService.getPagin(page, setTotalPages, setData, setLoading, recordsPerPage);
+    }, [page]
+  );
+
+  // Filtrar los datos según la búsqueda
+  useEffect(() => {
+    if (search.trim() === '') {
+      setFilteredData(data); 
+    } else {
+      const filtered = data.filter((item) =>
+        item.nombreDelEmpleado.toLowerCase().includes(search.toLowerCase()) ||
+        item.tituloDePuesto.toLowerCase().includes(search.toLowerCase())
+      );
+      setFilteredData(filtered); 
+    }
+  }, [search, data]);
+  const loadMore = () => {
+    if (page < totalPages) {
+      setPage(page + 1);
+    }
+  };
+
+  //Parametros a mostrar
+  const renderItem = ({ item }) => (
+    <View style={styles.row}>
+      <Text style={styles.cell}>{item.idPeoplesoft}</Text>
+      <Text style={styles.cell}>{item.nombreDelEmpleado}</Text>
+      <Text style={styles.cell}>{item.fechaDeIngreso}</Text>
+      <Text style={styles.cell}>{item.gradoDeCompensacion}</Text>
+      <Text style={styles.cell}>{item.tituloDePuesto}</Text>
+    </View>
+  );
+
   //AQUI IRIA MODALCONFIG
+  
   return (
     <View>
+      {/* Header */}
       <View style={styles.card}>
       <View style={styles.cardHeader}>
         <View style={styles.cardTitle}>
@@ -36,33 +71,19 @@ const EmployeesView = () => {
           />
         </View>
       </View>
-      
-
       {/* MODAL */}
-
       </View>
-      <ScrollView horizontal={true} contentContainerStyle={styles.card}>
-          <View>
-            <Table borderStyle={{borderWidth: 1}}>
-              <Row data={state.tableHead} widthArr={state.widthArr} style={styles.tableHeader} textStyle={styles.text}/>
-            </Table>
-            <ScrollView style={styles.dataWrapper}>
-              <Table borderStyle={{borderWidth: 1}}>
-                {
-                  tableData.map((rowData, index) => (
-                    <Row
-                      key={index}
-                      data={rowData}
-                      widthArr={state.widthArr}
-                      style={[styles.row, index%2]}
-                      textStyle={styles.text}
-                    />
-                  ))
-                }
-              </Table>
-            </ScrollView>
+      {/* Datatable */}
+      <View style={styles.card}>
+            <FlatList
+              data={filteredData}
+              renderItem={renderItem}
+              keyExtractor={(item) => item.idPeoplesoft.toString()}
+              onEndReached={loadMore}
+              onEndReachedThreshold={0.5}
+              ListFooterComponent={loading ? <ActivityIndicator size="large" color="#0000ff" /> : null}
+            />
           </View>
-        </ScrollView>
     </View>
   );
 };
@@ -89,7 +110,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     width: 180 ,
     margin: 10,
-    paddingLeft: 40,
+    paddingLeft: 10,
     borderRadius: 4,
   },
   cardToolbar: {
@@ -99,95 +120,106 @@ const styles = StyleSheet.create({
   cardBody: {
     flex:1
   },
-  tableHeader: { height: 50, backgroundColor: '#537791' },
-  text: { textAlign: 'center', fontWeight: '100' },
-  dataWrapper: { marginTop: -1 },
-  row: { height: 40, justifyContent: 'center'}
+  row: { 
+    flexDirection: 'row', 
+    padding: 10, 
+    borderBottomWidth: 1, 
+    borderBottomColor: '#ccc' 
+  },
+  cell: { 
+    flex: 1, 
+    textAlign: 'center' 
+  },
 });
 
 export default EmployeesView;
 
-//MODAL CONFIG
-  // const [showModal, setShowModal] = useState(false);
-  // const [isLoading, setIsLoading] = useState(false);
 
-  // const [formData, setFormData] = useState({
-  //   id: '',
-  // });
 
-  // const handleSubmit = () => {
-  //   setIsLoading(true);
-  //   setTimeout(() => {
-  //     setIsLoading(false);
-  //     setShowModal(false);
-  //   }, 2000);
-  // };
-//MODAL BUTTON
-{/* <View style={styles.cardToolbar}>
-          <Button title="Create New" onPress={() => setShowModal(true)} />
-        </View> */}
-//MODAL STYLES
-  // modalBackground: {
-  //   flex: 1,
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  //   backgroundColor: 'rgba(0,0,0,0.5)',
-  // },
-  // modalContent: {
-  //   backgroundColor: '#fff',
-  //   width: '80%',
-  //   borderRadius: 8,
-  //   padding: 20,
-  // },
-  // formContainer: {
-  //   paddingBottom: 40,
-  // },
-  // modalTitle: {
-  //   fontSize: 18,
-  //   fontWeight: 'bold',
-  //   marginBottom: 20,
-  // },
-  // input: {
-  //   height: 40,
-  //   borderColor: '#ccc',
-  //   borderWidth: 1,
-  //   borderRadius: 10,
-  //   marginBottom: 12,
-  //   paddingHorizontal: 8,
-  // },
-  // modalFooter: {
-  //   flexDirection: 'row',
-  //   justifyContent: 'space-between',
-  //   marginTop: 16,
-  // },
+// //Imports para las funcionalidades de edicion
+// // import {Button, Modal, TouchableOpacity, Text} from 'react-native';
+// //MODAL CONFIG
+//   // const [showModal, setShowModal] = useState(false);
+//   // const [isLoading, setIsLoading] = useState(false);
 
-{/* <Modal
-  visible={showModal}
-  animationType="slide"
-  transparent={true}
-  onRequestClose={() => setShowModal(false)}
->
-  <View style={styles.modalBackground}>
-    <View style={styles.modalContent}>
-      <ScrollView contentContainerStyle={styles.formContainer}>
-        <Text style={styles.modalTitle}>Employee</Text>
+//   // const [formData, setFormData] = useState({
+//   //   id: '',
+//   // });
 
-        <TextInput
-          style={styles.input}
-          placeholder="File del empleado"
-          value={formData.id}
-          onChangeText={(text) => handleInputChange('id', text)}
-        />
-        <View style={styles.modalFooter}>
-          <Button title="Cancelar" onPress={() => setShowModal(false)} />
-          <Button
-            title={isLoading ? "Guardando..." : "Guardar"}
-            onPress={handleSubmit}
-            disabled={isLoading}
-          />
-        </View>
-      </ScrollView>
-    </View>
-  </View>
-</Modal> */}
+//   // const handleSubmit = () => {
+//   //   setIsLoading(true);
+//   //   setTimeout(() => {
+//   //     setIsLoading(false);
+//   //     setShowModal(false);
+//   //   }, 2000);
+//   // };
+// //MODAL BUTTON
+// {/* <View style={styles.cardToolbar}>
+//           <Button title="Create New" onPress={() => setShowModal(true)} />
+//         </View> */}
+// //MODAL STYLES
+//   // modalBackground: {
+//   //   flex: 1,
+//   //   justifyContent: 'center',
+//   //   alignItems: 'center',
+//   //   backgroundColor: 'rgba(0,0,0,0.5)',
+//   // },
+//   // modalContent: {
+//   //   backgroundColor: '#fff',
+//   //   width: '80%',
+//   //   borderRadius: 8,
+//   //   padding: 20,
+//   // },
+//   // formContainer: {
+//   //   paddingBottom: 40,
+//   // },
+//   // modalTitle: {
+//   //   fontSize: 18,
+//   //   fontWeight: 'bold',
+//   //   marginBottom: 20,
+//   // },
+//   // input: {
+//   //   height: 40,
+//   //   borderColor: '#ccc',
+//   //   borderWidth: 1,
+//   //   borderRadius: 10,
+//   //   marginBottom: 12,
+//   //   paddingHorizontal: 8,
+//   // },
+//   // modalFooter: {
+//   //   flexDirection: 'row',
+//   //   justifyContent: 'space-between',
+//   //   marginTop: 16,
+//   // },
+
+// {/* <Modal
+//   visible={showModal}
+//   animationType="slide"
+//   transparent={true}
+//   onRequestClose={() => setShowModal(false)}
+// >
+//   <View style={styles.modalBackground}>
+//     <View style={styles.modalContent}>
+//       <ScrollView contentContainerStyle={styles.formContainer}>
+//         <Text style={styles.modalTitle}>Employee</Text>
+
+//         <TextInput
+//           style={styles.input}
+//           placeholder="File del empleado"
+//           value={formData.id}
+//           onChangeText={(text) => handleInputChange('id', text)}
+//         />
+//         <View style={styles.modalFooter}>
+//           <Button title="Cancelar" onPress={() => setShowModal(false)} />
+//           <Button
+//             title={isLoading ? "Guardando..." : "Guardar"}
+//             onPress={handleSubmit}
+//             disabled={isLoading}
+//           />
+//         </View>
+//       </ScrollView>
+//     </View>
+//   </View>
+// </Modal> */}
+
 
