@@ -71,6 +71,10 @@ const WorkareasView = () => {
       </View>
       {/* Datatable */}
       <View style={styles.card}>
+            <View style={styles.headerRow}>
+              <Text style={styles.headerCell}>Nombre del area</Text>
+              <Text style={styles.headerCell}>Id</Text>
+            </View>
             <FlatList
               data={filteredData}
               renderItem={renderItem}
@@ -123,6 +127,16 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ccc' 
   },
   cell: { 
+    flex: 1, 
+    textAlign: 'center' 
+  },
+  headerRow: {
+    padding:10,
+    flexDirection: 'row',
+    backgroundColor: '#f0f0f0',
+    padding: 10,
+  },
+  headerCell: { 
     flex: 1, 
     textAlign: 'center' 
   },

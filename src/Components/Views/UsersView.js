@@ -48,9 +48,9 @@ const UsersView = () => {
     <View style={styles.row}>
       <Text style={styles.cell}>{item.name}</Text>
       <Text style={styles.cell}>{item.idPeoplesoft}</Text>
-      <Text style={styles.cell}>{item.phoneNumber}</Text>
       <Text style={styles.cell}>{item.email}</Text>
       <Text style={styles.cell}>{item.idSupervisor}</Text>
+      <Text style={styles.cell}>{item.phoneNumber}</Text>
       <Text style={styles.cell}>{item.idRoute}</Text>
       <Text style={styles.cell}>{item.idWorkArea}</Text>
       <Text style={styles.cell}>{item.idGroup}</Text>
@@ -77,6 +77,16 @@ const UsersView = () => {
       </View>
       {/* Datatable */}
       <View style={styles.card}>
+            <View style={styles.headerRow}>
+              <Text style={styles.headerCell}>Nombre</Text>
+              <Text style={styles.headerCell}>Id Peoplesoft</Text>
+              <Text style={styles.headerCell}>e-mail</Text>
+              <Text style={styles.headerCell}>Id supervisor</Text>
+              <Text style={styles.headerCell}>No. de telefono</Text>
+              <Text style={styles.headerCell}>Id ruta</Text>
+              <Text style={styles.headerCell}>Id area de trabajo</Text>
+              <Text style={styles.headerCell}>Id grupo</Text>
+            </View>
             <FlatList
               data={filteredData}
               renderItem={renderItem}
@@ -129,6 +139,16 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ccc' 
   },
   cell: { 
+    flex: 1, 
+    textAlign: 'center' 
+  },
+  headerRow: {
+    padding:10,
+    flexDirection: 'row',
+    backgroundColor: '#f0f0f0',
+    padding: 10,
+  },
+  headerCell: { 
     flex: 1, 
     textAlign: 'center' 
   },
