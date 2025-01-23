@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Card, Icon } from 'react-native-elements';
-import { useNavigation } from '@react-navigation/native';
 
 const menuItems = [
   { icon: 'align-vertical-bottom', title: 'Attendance' },
@@ -14,11 +13,11 @@ const menuItems = [
   { icon: 'application-edit', title: 'Workschemes' },
 ];
 
-const HomeView = () => {
-  const navigation = useNavigation();
+const HomeView = ({ navigation }) => {
   const handleNav = (title) => {
     navigation.navigate(title);
   };
+  
 
   return (
     <ScrollView style={styles.container}>

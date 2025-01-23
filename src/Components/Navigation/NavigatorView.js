@@ -16,29 +16,30 @@ import ShiftView from '../Views/ShiftView.js';
 import UsersView from '../Views/UsersView.js';
 import WorkareasView from '../Views/WorkareasView.js';
 import WorkschemesView from '../Views/WorkschemesView.js';
+import { SessionProvider } from '../../Shared/sessionContextDTO.js';
 // import RolesView from '../Views/RolesView.js';
 
 
 export default class NavigationView extends React.Component {
     constructor() {
         super();
-
         const Drawer = createDrawerNavigator();
         this.state = { Drawer };
 
     }
+
     LoginScreen({ navigation }) {
         return <LoginView navigation={navigation}/>
     }
 
     HomeScreen({ navigation, route }) {
-        return <HomeView navigation={navigation} route={route} />
+        return <HomeView navigation={navigation}  route={route}  />
     }
     AttendanceScreen({navigation, route}){
-        return <AttendanceView navigation={navigation} route={route}/>
+        return <AttendanceView navigation={navigation} route={route} />
     }
     EmployeesScreen({navigation, route}){
-        return <EmployeesView navigation={navigation} route={route}/>
+        return <EmployeesView navigation={navigation} route={route} />
     }
     GroupsScreen({navigation, route}){
         return <GroupsView navigation={navigation} route={route}/>
@@ -48,13 +49,13 @@ export default class NavigationView extends React.Component {
     }
     
     ShiftScreen({navigation, route}){
-        return <ShiftView navigation={navigation} route={route}/>
+        return <ShiftView navigation={navigation} route={route} />
     }
     UsersScreen({navigation, route}){
-        return <UsersView navigation={navigation} route={route}/>
+        return <UsersView navigation={navigation} route={route} />
     }
     WorkareasScreen({navigation, route}){
-        return <WorkareasView navigation={navigation} route={route}/>
+        return <WorkareasView navigation={navigation} route={route} />
     }
     WorkschemesScreen({navigation, route}){
         return <WorkschemesView navigation={navigation} route={route}/>
@@ -116,7 +117,8 @@ export default class NavigationView extends React.Component {
 
         ];
 
-        return <NavigationContainer>
+        return <SessionProvider>
+            <NavigationContainer>
             <Drawer.Navigator
                 initialRouteName='Login'
                 drawerContent={props => <MenuContainer
@@ -126,8 +128,8 @@ export default class NavigationView extends React.Component {
                 screenOptions={({ route }) => {
                     const { name } = route;
                     return {
-                        // headerShown: name != 'Login',
-                        // swipeEnabled: name != 'Login',
+                        headerShown: name != 'Login',
+                        swipeEnabled: name != 'Login',
                         headerStyle: { backgroundColor: '#1e1e3f' },
                         headerTintColor: '#fff'
                     }
@@ -141,5 +143,6 @@ export default class NavigationView extends React.Component {
                 
             </Drawer.Navigator>
         </NavigationContainer>
+        </SessionProvider>
     }
 }

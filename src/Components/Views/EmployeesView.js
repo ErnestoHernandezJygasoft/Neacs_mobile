@@ -74,22 +74,22 @@ const EmployeesView = () => {
       </View>
       {/* Datatable */}
       <View style={styles.card}>
-            <View style={styles.headerRow}>
-              <Text style={styles.headerCell}>ID Peoplesoft</Text>
-              <Text style={styles.headerCell}>Nombre del Empleado</Text>
-              <Text style={styles.headerCell}>Check-in time</Text>
-              <Text style={styles.headerCell}>Grado de Compensación</Text>
-              <Text style={styles.headerCell}>Título de Puesto</Text>
-            </View>
-            <FlatList
-              data={filteredData}
-              renderItem={renderItem}
-              keyExtractor={(item) => item.idPeoplesoft.toString()}
-              onEndReached={loadMore}
-              onEndReachedThreshold={0.5}
-              ListFooterComponent={loading ? <ActivityIndicator size="large" color="#0000ff" /> : null}
-            />
-          </View>
+        <View style={styles.headerRow}>
+          <Text style={styles.headerCell}>ID Peoplesoft</Text>
+          <Text style={styles.headerCell}>Nombre del Empleado</Text>
+          <Text style={styles.headerCell}>Check-in time</Text>
+          <Text style={styles.headerCell}>Grado de Compensación</Text>
+          <Text style={styles.headerCell}>Título de Puesto</Text>
+        </View>
+        <FlatList
+          data={filteredData}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.idPeoplesoft.toString()}
+          onEndReached={loadMore}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={loading ? <ActivityIndicator size="large" color="#0000ff" /> : null}
+        />
+      </View>
     </View>
   );
 };

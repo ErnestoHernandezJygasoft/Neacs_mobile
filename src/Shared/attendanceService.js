@@ -1,42 +1,62 @@
-const apiUrl = 'https://192.168.20.244:5000/api/Attendance';
+import { checkStatus } from "./Base";
 
 const AttendanceService = {
-  async getPagin(search) {
-    const url = `${apiUrl}/GetAttendanceRecordsByIdSupervisor`;
+  async getPagin(endpoint, page, setTotalPages, setData, setLoading, recordsPerPage, selectedDate, activeSesionId) {
+    const url = `http://192.168.20.244:5000/api/Attendance/${endpoint}`;
+    setLoading(true);
     try {
       const response = await fetch(url, {
         method: 'POST',
         headers: {
-          'Accept': 'application/json',
+          'Accept': '*/*',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(search),
+        body: JSON.stringify({
+          options: {
+            draw: 1, 
+            columns: [ 
+              { 
+                data: 'string', 
+                name: 'string', 
+                searchable: true,
+                orderable: true, 
+                search: { 
+                  value: '', 
+                  regex: true, 
+                }, 
+              }, 
+            ], 
+            order: [ 
+              { 
+                column: 0, 
+                dir: 'string', 
+              }, 
+            ], 
+            start: (page - 1) * 10, 
+            length: 10, 
+            search: {
+               value: '', 
+               regex: true, 
+            }
+          },
+          dateTimeSearch: selectedDate,
+          id: activeSesionId
+        })
       });
-      const data = await response.json();
-      return data;
+      const result = await response.json();
+      if (result.succeeded && result.result) {
+        const { data, recordsTotal } = result.result;
+        setData((prevData) => [...(prevData || []), ...(data || [])]);
+        setTotalPages(Math.ceil(recordsTotal / recordsPerPage));
+      } else {
+        console.error('Error en la respuesta de la API:', result.errors);
+      }
     } catch (error) {
-      console.error('Error:', error);
-      throw error;
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
-  },
-  async getTotalAttendance(model) {
-    const url = `${apiUrl}/GetTotalAttendance`;
-    try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(model),
-      });
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error('Error:', error);
-      throw error;
-    }
-  },
+  }
 };
 
 export default AttendanceService;

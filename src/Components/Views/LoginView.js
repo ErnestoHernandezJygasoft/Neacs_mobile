@@ -1,18 +1,20 @@
 import React, {useState} from 'react';
 import {  View, Text, StyleSheet, TextInput, Button, ActivityIndicator, Image } from 'react-native';
 import { validateAuth, login } from '../../Shared/authService';
-import { useNavigation } from '@react-navigation/native';
+import { useSession } from '../../Shared/sessionContextDTO';
 
-const LoginView = () => {
-  const navigation = useNavigation();
+const LoginView = ({ navigation }) => {
   const [username, setUsername] = useState(''); 
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
+  const { setSession } = useSession(); 
   
-  const submitForm = () => {
+  const submitForm = async () => {
     if(validateAuth(username, password, setErrors)){
+      setSession(username);
       login(username, password, navigation)
     } 
+    
   };
 
   return (
