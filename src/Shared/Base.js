@@ -22,7 +22,7 @@ export async function fetchFromAPI(URL, method, requestBody) {
     const contentType = response.headers.get('Content-Type');
     if (contentType && contentType.includes('application/json')) {
       const data = await response.json();
-      console.log("Datos procesados de la respuesta (JSON):", data);
+      // console.log("Datos procesados de la respuesta (JSON):", data);
       return data;
     } 
   } catch (error) {

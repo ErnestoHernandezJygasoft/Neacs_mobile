@@ -35,8 +35,8 @@ const AttendanceView = ({ navigation }) => {
       setFilteredData(data); 
     } else {
       const filtered = data.filter((item) =>
-        item.nombreDelEmpleado.toLowerCase().includes(search.toLowerCase()) ||
-        item.tituloDePuesto.toLowerCase().includes(search.toLowerCase())
+        item.name.toLowerCase().includes(search.toLowerCase()) ||
+        item.shiftPattern.toLowerCase().includes(search.toLowerCase())
       );
       setFilteredData(filtered); 
     }
@@ -136,7 +136,8 @@ const AttendanceView = ({ navigation }) => {
         <FlatList
           data={filteredData}
           renderItem={renderItem}
-          keyExtractor={(item) => item.id.toString()}
+          //Este tipo de tabla requiere un id unico, si no hay un idPeoplesoft generara uno en automatico
+          keyExtractor={(item) => item.idPeoplesoft ? item.idPeoplesoft.toString() : Math.random().toString()}
           onEndReached={loadMore}
           onEndReachedThreshold={0.5}
           ListFooterComponent={loading ? <ActivityIndicator size="large" color="#0000ff" /> : null}
