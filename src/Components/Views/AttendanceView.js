@@ -24,10 +24,9 @@ const AttendanceView = ({ navigation }) => {
   const { activeSesionId } = useSession();
   
   // Filtrar los datos según la búsqueda
-  const onDateChange = (event, date) => {
-    setShowDatePicker(false);
-    if (date) {
-      setSelectedDate(date);
+  const handleInputChange = (field, value) => {
+    if (field === 'search') {
+      setSearch(value);
     }
   };
   useEffect(() => {
@@ -47,9 +46,18 @@ const AttendanceView = ({ navigation }) => {
     }
   };
 
+  //Datos por fecha
+  const onDateChange = (event, date) => {
+    setShowDatePicker(false);
+    if (date) {
+      setSelectedDate(date);
+    }
+  };
+
   //Carga de datos
   useEffect(() => {
-    AttendanceService.getPagin('GetAttendanceRecordsByIdSupervisor', page, setTotalPages, setData,  setLoading, recordsPerPage, selectedDate, activeSesionId);  
+    AttendanceService.getTotalAttendance(selectedDate,activeSesionId,setTotal, setPresent, setAbsent);
+    AttendanceService.getAttendanceById( page, setTotalPages, setData,  setLoading, recordsPerPage, selectedDate, activeSesionId);  
     }, [page]
   );
   
@@ -85,10 +93,9 @@ const AttendanceView = ({ navigation }) => {
             <View style={styles.inputGroup}>
               <Icon style={styles.searchIcon} name="magnify" size={20} color="#000"/>
               <TextInput
-                style={styles.input}
-                placeholder="dd/mm/yyyy"
-                value={selectedDate.toLocaleDateString()}
-                onFocus={() => setShowDatePicker(true)}
+                style={styles.searchInput}
+                placeholder="Buscar"
+                onChangeText={(text) => handleInputChange('search', text)}
               />
               <Button title="📅" onPress={() => setShowDatePicker(true)} />
             </View>
