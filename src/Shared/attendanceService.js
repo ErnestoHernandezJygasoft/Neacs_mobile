@@ -63,13 +63,12 @@ const AttendanceService = {
 
   //GetTotalAttendance created on Jan/24/2025
   async getTotalAttendance(selectedDate, activeSesionId, setTotal, setPresent, setAbsent) {
-    console.log("Iniciando la llamada a la API...");
     const url = `${apiUrl}GetTotalAttendance`;
     const dateTimeSearch = selectedDate.toISOString();
     const id = activeSesionId;
     try {
         const response = await fetchFromAPI(url, 'POST', { dateTimeSearch, id });
-        console.log("Datos procesados de la respuesta (JSON):", response.result);
+        // console.log("Datos procesados de la respuesta (JSON):", response.result);
         if (response && response.result) {
           setTotal(response.result.total);
           setPresent(response.result.present);

@@ -3,7 +3,8 @@ export function checkStatus(response) {
         return response;
     } else {
         //Check statusText functionality, message not showing
-        const error = new Error(`HTTP Error ${response.statusText}`);
+        const statusText = response.statusText || 'Unknown error';
+        const error = new Error(`HTTP Error ${statusText} (${response.status})`);
         error.status = response.statusText;
         error.response = response;
         console.log(error);
@@ -22,7 +23,7 @@ export async function fetchFromAPI(URL, method, requestBody) {
     const contentType = response.headers.get('Content-Type');
     if (contentType && contentType.includes('application/json')) {
       const data = await response.json();
-      console.log("Base.js: Datos procesados de la respuesta (JSON) -->", data);
+      // console.log("Base.js: Datos procesados de la respuesta (JSON) -->", data);
       return data;
     } 
   } catch (error) {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Text, StyleSheet, ScrollView, FlatList, ActivityIndicator} from 'react-native';
+import { View, TextInput, Text, StyleSheet, ScrollView, FlatList, ActivityIndicator, Button} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { getPagin } from '../../Shared/Base';
 
@@ -17,31 +17,32 @@ const EmployeesView = () => {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const recordsPerPage = 10; 
+  const recordsPerPage = 6; 
 
   //Carga de datos
   useEffect(() => {
     getPagin('http://192.168.20.244:5000/api/Employee',page, setTotalPages, setData, setLoading, recordsPerPage);
     }, [page]
   );
+  const paginatedData = data.slice((page - 1) * recordsPerPage, page * recordsPerPage);
 
-  // Filtrar los datos según la búsqueda
-  useEffect(() => {
-    if (search.trim() === '') {
-      setFilteredData(data); 
-    } else {
-      const filtered = data.filter((item) =>
-        item.nombreDelEmpleado.toLowerCase().includes(search.toLowerCase()) ||
-        item.tituloDePuesto.toLowerCase().includes(search.toLowerCase())
-      );
-      setFilteredData(filtered); 
-    }
-  }, [search, data]);
-  const loadMore = () => {
-    if (page < totalPages) {
-      setPage(page + 1);
-    }
-  };
+  // // Filtrar los datos según la búsqueda
+  // useEffect(() => {
+  //   if (search.trim() === '') {
+  //     setFilteredData(data); 
+  //   } else {
+  //     const filtered = data.filter((item) =>
+  //       item.nombreDelEmpleado.toLowerCase().includes(search.toLowerCase()) ||
+  //       item.tituloDePuesto.toLowerCase().includes(search.toLowerCase())
+  //     );
+  //     setFilteredData(filtered); 
+  //   }
+  // }, [search, data]);
+  // const loadMore = () => {
+  //   if (page < totalPages) {
+  //     setPage(page + 1);
+  //   }
+  // };
 
   //Parametros a mostrar
   const renderItem = ({ item }) => (
@@ -82,13 +83,32 @@ const EmployeesView = () => {
           <Text style={styles.headerCell}>Título de Puesto</Text>
         </View>
         <FlatList
-          data={filteredData}
+          data={paginatedData}
           renderItem={renderItem}
           keyExtractor={(item) => item.idPeoplesoft.toString()}
-          onEndReached={loadMore}
-          onEndReachedThreshold={0.5}
           ListFooterComponent={loading ? <ActivityIndicator size="large" color="#0000ff" /> : null}
         />
+        <View style={styles.cardFooter}>
+          <Text style={styles.pageNumber}>
+            {page} / {totalPages}
+          </Text>
+          <View style={styles.paginationButtons}>
+            <View style={styles.buttons}>
+              <Button
+                title="Anterior"
+                onPress={() => setPage((prevPage) => Math.max(prevPage - 1, 1))}
+                disabled={page === 1}
+              />
+            </View>
+            <View style={styles.buttons}>
+              <Button
+                title="Siguiente"
+                onPress={() => setPage((prevPage) => Math.min(prevPage + 1, totalPages))}
+                disabled={page === totalPages}
+              />
+            </View>
+          </View>
+        </View>
       </View>
     </View>
   );
@@ -96,7 +116,7 @@ const EmployeesView = () => {
 
 const styles = StyleSheet.create({
   card: {
-    margin: 16,
+    margin: 10,
     backgroundColor: '#fff',
     borderRadius: 8,
     elevation: 3,
@@ -145,6 +165,17 @@ const styles = StyleSheet.create({
   headerCell: { 
     flex: 1, 
     textAlign: 'center' 
+  },
+  cardFooter: {
+    marginTop: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  paginationButtons: {
+    flexDirection: 'row',
+  },
+  buttons: {
+    margin: 5,
   },
 });
 
