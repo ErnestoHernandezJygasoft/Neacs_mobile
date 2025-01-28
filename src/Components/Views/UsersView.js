@@ -1,47 +1,39 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Text, StyleSheet, ScrollView, FlatList, ActivityIndicator} from 'react-native';
+import { View, TextInput, Text, StyleSheet, ScrollView, FlatList, ActivityIndicator, Button} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { getPagin } from '../../Shared/Base';
+import { getPagin, paginSearch } from '../../Shared/Base';
 
 const UsersView = () => {
   //Barra de busqueda
-  const [search, setSearch] = useState('');
-  const [filteredData, setFilteredData] = useState([]);
-  const handleInputChange = (field, value) => {
-    if (field === 'search') {
-      setSearch(value);
-    }
-  };
-  //Datatable
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
-  const recordsPerPage = 10; 
-
-  //Carga de datos
-  useEffect(() => {
-    getPagin('http://192.168.20.244:5000/api/Users',page, setTotalPages, setData, setLoading, recordsPerPage);
-    }, [page]
-  );
-
-  // Filtrar los datos según la búsqueda
-  useEffect(() => {
-    if (search.trim() === '') {
-      setFilteredData(data); 
-    } else {
-      const filtered = data.filter((item) =>
-        item.idPeoplesoft.toLowerCase().includes(search.toLowerCase()) ||
-        item.name.toLowerCase().includes(search.toLowerCase())
-      );
-      setFilteredData(filtered); 
-    }
-  }, [search, data]);
-  const loadMore = () => {
-    if (page < totalPages) {
-      setPage(page + 1);
-    }
-  };
+    const [search, setSearch] = useState('');
+    const [filteredData, setFilteredData] = useState([]);
+    const handleInputChange = (field, value) => {
+      if (field === 'search') {
+        setSearch(value);
+      }
+    };
+    //Datatable
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
+    const recordsPerPage = 6; 
+  
+    //Carga de datos
+    useEffect(() => {
+      getPagin('http://192.168.20.244:5000/api/Users',page, setTotalPages, setData, setLoading, recordsPerPage);
+      }, [page]
+    );
+    
+    //Busqueda
+    useEffect(() => {
+      if (search.trim() === '') {
+        const noSearch = data.slice((page - 1) * recordsPerPage, page * recordsPerPage);
+        setFilteredData(noSearch); 
+      } else {
+        paginSearch('http://192.168.20.244:5000/api/Users', 'name', search, page, setTotalPages, setFilteredData, setLoading, recordsPerPage);
+      }
+    }, [search, data, page]);
 
   //Parametros a mostrar
   const renderItem = ({ item }) => (
@@ -70,13 +62,17 @@ const UsersView = () => {
             style={styles.searchInput}
             placeholder="Buscar"
             onChangeText={(text) => handleInputChange('search', text)}
+            onBlur={() => {
+              setSearch('');
+              setPage(1);
+            }}
           />
         </View>
       </View>
       {/* MODAL */}
       </View>
       {/* Datatable */}
-      <View style={styles.card}>
+      <View style={styles.datatableCard}>
             <View style={styles.headerRow}>
               <Text style={styles.headerCell}>Nombre</Text>
               <Text style={styles.headerCell}>Id Peoplesoft</Text>
@@ -91,10 +87,29 @@ const UsersView = () => {
               data={filteredData}
               renderItem={renderItem}
               keyExtractor={(item) => item.idPeoplesoft.toString()}
-              onEndReached={loadMore}
-              onEndReachedThreshold={0.5}
               ListFooterComponent={loading ? <ActivityIndicator size="large" color="#0000ff" /> : null}
             />
+            <View style={styles.cardFooter}>
+              <Text style={styles.pageNumber}>
+                {page} / {totalPages}
+              </Text>
+              <View style={styles.paginationButtons}>
+                <View style={styles.buttons}>
+                  <Button
+                    title="Anterior"
+                    onPress={() => setPage((prevPage) => Math.max(prevPage - 1, 1))}
+                    disabled={page === 1}
+                  />
+                </View>
+                <View style={styles.buttons}>
+                  <Button
+                    title="Siguiente"
+                    onPress={() => setPage((prevPage) => Math.min(prevPage + 1, totalPages))}
+                    disabled={page === totalPages}
+                  />
+                </View>
+              </View>
+            </View>
           </View>
     </View>
   );
@@ -103,6 +118,14 @@ const UsersView = () => {
 const styles = StyleSheet.create({
   card: {
     margin: 16,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    elevation: 3,
+    padding: 16,
+  },
+  datatableCard: {
+    margin: 10,
+    height: 650,
     backgroundColor: '#fff',
     borderRadius: 8,
     elevation: 3,
@@ -151,6 +174,17 @@ const styles = StyleSheet.create({
   headerCell: { 
     flex: 1, 
     textAlign: 'center' 
+  },
+  cardFooter: {
+    marginTop: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  paginationButtons: {
+    flexDirection: 'row',
+  },
+  buttons: {
+    margin: 5,
   },
 });
 export default UsersView;

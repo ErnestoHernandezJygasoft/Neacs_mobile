@@ -104,5 +104,61 @@ export async function getPagin(apiUrl, page, setTotalPages, setData, setLoading,
   }
 }
 
+//Busqueda para employees y users created on Jan/28/2025
+export async function paginSearch(apiUrl, parameter, searchValue, page, setTotalPages, setFilteredData, setLoading, recordsPerPage) {
+  // console.log('Realizando solicitud de busqueda');
+  // console.log({apiUrl, parameter, searchValue});
+  const url = `${apiUrl}/getPagin`;
+  setLoading(true);
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Accept': '*/*',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ 
+        draw: 1,
+        columns: [
+          {
+            data: parameter,
+            name: parameter,
+            searchable: true,
+            orderable: true,
+            search: {
+              value: "",
+              regex: true
+            }
+          }
+        ],
+        order: [
+          {
+            column: 0,
+            dir: parameter
+          }
+        ],
+        start: (page - 1) * recordsPerPage, 
+        length: 6,
+        search: {
+          value: searchValue,
+          regex: true
+        }
+      }),
+    });
+    checkStatus(response);
+    const result = await response.json();
+    if (result.succeeded && result.result) {
+      const { data, recordsTotal } = result.result;
+      setFilteredData(data || []);
+      setTotalPages(Math.ceil(recordsTotal / recordsPerPage));
+    } else {
+      console.error('Error en la respuesta de la API:', result.errors);
+    }
+  } catch (error) {
+    console.error(error);
+  } finally {
+    setLoading(false);
+  }
+}
   
   

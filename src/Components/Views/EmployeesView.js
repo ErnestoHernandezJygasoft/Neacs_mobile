@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, Text, StyleSheet, ScrollView, FlatList, ActivityIndicator, Button} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { getPagin } from '../../Shared/Base';
+import { getPagin, paginSearch } from '../../Shared/Base';
 
 const EmployeesView = () => {
   //Barra de busqueda
@@ -24,25 +24,16 @@ const EmployeesView = () => {
     getPagin('http://192.168.20.244:5000/api/Employee',page, setTotalPages, setData, setLoading, recordsPerPage);
     }, [page]
   );
-  const paginatedData = data.slice((page - 1) * recordsPerPage, page * recordsPerPage);
-
-  // // Filtrar los datos según la búsqueda
-  // useEffect(() => {
-  //   if (search.trim() === '') {
-  //     setFilteredData(data); 
-  //   } else {
-  //     const filtered = data.filter((item) =>
-  //       item.nombreDelEmpleado.toLowerCase().includes(search.toLowerCase()) ||
-  //       item.tituloDePuesto.toLowerCase().includes(search.toLowerCase())
-  //     );
-  //     setFilteredData(filtered); 
-  //   }
-  // }, [search, data]);
-  // const loadMore = () => {
-  //   if (page < totalPages) {
-  //     setPage(page + 1);
-  //   }
-  // };
+  
+  //Busqueda
+  useEffect(() => {
+    if (search.trim() === '') {
+      const noSearch = data.slice((page - 1) * recordsPerPage, page * recordsPerPage);
+      setFilteredData(noSearch); 
+    } else {
+      paginSearch('http://192.168.20.244:5000/api/Employee', 'nombreDelEmpleado', search, page, setTotalPages, setFilteredData, setLoading, recordsPerPage);
+    }
+  }, [search, data, page]);
 
   //Parametros a mostrar
   const renderItem = ({ item }) => (
@@ -68,13 +59,17 @@ const EmployeesView = () => {
             style={styles.searchInput}
             placeholder="Buscar"
             onChangeText={(text) => handleInputChange('search', text)}
+            onBlur={() => {
+              setSearch('');
+              setPage(1);
+            }}
           />
         </View>
       </View>
       {/* MODAL */}
       </View>
       {/* Datatable */}
-      <View style={styles.card}>
+      <View style={styles.datatableCard}>
         <View style={styles.headerRow}>
           <Text style={styles.headerCell}>ID Peoplesoft</Text>
           <Text style={styles.headerCell}>Nombre del Empleado</Text>
@@ -83,7 +78,7 @@ const EmployeesView = () => {
           <Text style={styles.headerCell}>Título de Puesto</Text>
         </View>
         <FlatList
-          data={paginatedData}
+          data={filteredData}
           renderItem={renderItem}
           keyExtractor={(item) => item.idPeoplesoft.toString()}
           ListFooterComponent={loading ? <ActivityIndicator size="large" color="#0000ff" /> : null}
@@ -117,6 +112,14 @@ const EmployeesView = () => {
 const styles = StyleSheet.create({
   card: {
     margin: 10,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    elevation: 3,
+    padding: 16,
+  },
+  datatableCard: {
+    margin: 10,
+    height: 650,
     backgroundColor: '#fff',
     borderRadius: 8,
     elevation: 3,
