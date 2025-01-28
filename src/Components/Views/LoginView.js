@@ -46,8 +46,9 @@ const LoginView = ({ navigation }) => {
           />
           {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
         </View>
+        {/* FORGOT PASSWORD */}
         <View style={styles.linkContainer}>
-          <Text style={styles.linkText}>¿Olvidó la contraseña?</Text>
+          {/* <Text style={styles.linkText}>¿Olvidó la contraseña?</Text> */}
         </View>
         <Button
           title="Continuar"

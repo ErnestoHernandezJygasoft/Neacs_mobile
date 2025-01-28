@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Text, StyleSheet, ScrollView, FlatList, ActivityIndicator, Button} from 'react-native';
+import { View, TextInput, Text, StyleSheet, ScrollView, FlatList, ActivityIndicator, Button, useWindowDimensions} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { getPagin, paginSearch } from '../../Shared/Base';
 
 const UsersView = () => {
+  //Orientacion del movil
+  const { width, height } = useWindowDimensions();
+  const isLandscape = width > height;
+
   //Barra de busqueda
     const [search, setSearch] = useState('');
     const [filteredData, setFilteredData] = useState([]);
@@ -42,10 +46,14 @@ const UsersView = () => {
       <Text style={styles.cell}>{item.idPeoplesoft}</Text>
       <Text style={styles.cell}>{item.email}</Text>
       <Text style={styles.cell}>{item.idSupervisor}</Text>
-      <Text style={styles.cell}>{item.phoneNumber}</Text>
-      <Text style={styles.cell}>{item.idRoute}</Text>
-      <Text style={styles.cell}>{item.idWorkArea}</Text>
-      <Text style={styles.cell}>{item.idGroup}</Text>
+      {isLandscape && (
+        <>
+          <Text style={styles.cell}>{item.phoneNumber}</Text>
+          <Text style={styles.cell}>{item.idRoute}</Text>
+          <Text style={styles.cell}>{item.idWorkArea}</Text>
+          <Text style={styles.cell}>{item.idGroup}</Text>
+        </>
+      )}
     </View>
   );
 
@@ -78,10 +86,14 @@ const UsersView = () => {
               <Text style={styles.headerCell}>Id Peoplesoft</Text>
               <Text style={styles.headerCell}>e-mail</Text>
               <Text style={styles.headerCell}>Id supervisor</Text>
+              {isLandscape && (
+            <>
               <Text style={styles.headerCell}>No. de telefono</Text>
               <Text style={styles.headerCell}>Id ruta</Text>
               <Text style={styles.headerCell}>Id area de trabajo</Text>
               <Text style={styles.headerCell}>Id grupo</Text>
+            </>
+          )}
             </View>
             <FlatList
               data={filteredData}
