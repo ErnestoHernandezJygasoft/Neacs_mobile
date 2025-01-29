@@ -11,11 +11,11 @@ export function validateAuth(username, password, setErrors) {
   if (username.length < 1){
     validityStatus = false;
     errors["username"] = '* Este campo no puede estar vacio';
-  }
-  if (!/^\d+$/.test(username)) {
+  } else if (!/^\d+$/.test(username)) {
     validityStatus = false;
     errors["username"] = '*Este campo solo debe contener números';
   }
+  
   if (password.length < 1){
     validityStatus = false;
     errors["password"] = '* Este campo no puede estar vacio';
@@ -27,16 +27,19 @@ export function validateAuth(username, password, setErrors) {
 //METODO PARA EL LOGIN created on Jan/14/25 (currently working)
 export async function login(username, password, navigation) {
   try {
-    const response = await fetchFromAPI('http://192.168.20.244:5000/api/Users', 'POST', { username, password });
-    if (response) {
+    const data = await fetchFromAPI('http://192.168.20.244:5000/api/Users', 'POST', { username, password });
+    if (data && data.result) {
       navigation.navigate('Dashboard');
     } else {
-      throw error;
+      throw new Error('Usuario o contraseña incorrectos');
     }
   } catch (error) {
-    console.error(error);
+    if (error.message.includes("User not found") || error.message.includes("Wrong password")) {
+      throw new Error('Usuario o contraseña incorrectos');
+    }
   }
 }
+
 // METODO ANTERIOR PARA LOGIN created on Jan/10/25
 // export function login(username, password, navigation){
 //   fetch('http://192.168.20.244:5000/api/Users', {

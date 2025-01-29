@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Text, StyleSheet, ScrollView, FlatList, ActivityIndicator, Button} from 'react-native';
+import { View, TextInput, Text, StyleSheet, ScrollView, FlatList, ActivityIndicator, Button, useWindowDimensions} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { getPagin, paginSearch } from '../../Shared/Base';
 
 const EmployeesView = () => {
+  //Orientacion del movil
+  const { width, height } = useWindowDimensions();
+  const isLandscape = width > height;
+
   //Barra de busqueda
   const [search, setSearch] = useState('');
   const [filteredData, setFilteredData] = useState([]);

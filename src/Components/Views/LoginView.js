@@ -8,14 +8,20 @@ const LoginView = ({ navigation }) => {
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
   const { setSession } = useSession(); 
-  
+  const [errorMessage, setErrorMessage] = useState('');
+
   const submitForm = async () => {
-    if(validateAuth(username, password, setErrors)){
+  if (validateAuth(username, password, setErrors)) {
+    try {
+      setErrorMessage('');
       setSession(username);
-      login(username, password, navigation)
-    } 
-    
-  };
+      await login(username, password, navigation);
+    } catch (error) {
+      setErrorMessage('Usuario o contraseña incorrectos');
+    }
+  }
+};
+
 
   return (
     <View style={styles.container}>
@@ -35,6 +41,7 @@ const LoginView = ({ navigation }) => {
             autoCapitalize="none"
           />
           {errors.username && <Text style={styles.errorText}>{errors.username}</Text>}
+          {errorMessage ? <Text style={{ color: 'red' }}>{errorMessage}</Text> : null}
         </View>
         <View style={styles.inputContainer}>
           <TextInput
@@ -45,11 +52,13 @@ const LoginView = ({ navigation }) => {
             autoCapitalize="none"
           />
           {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
+          {errorMessage ? <Text style={{ color: 'red' }}>{errorMessage}</Text> : null}
         </View>
         {/* FORGOT PASSWORD */}
         <View style={styles.linkContainer}>
           {/* <Text style={styles.linkText}>¿Olvidó la contraseña?</Text> */}
         </View>
+        
         <Button
           title="Continuar"
           onPress={submitForm}

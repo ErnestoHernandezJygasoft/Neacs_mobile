@@ -1,16 +1,21 @@
-export function checkStatus(response) {
-    if (response.status >= 200 && response.status < 300) {
-        return response;
-    } else {
-        //Check statusText functionality, message not showing
-        const statusText = response.statusText || 'Unknown error';
-        const error = new Error(`HTTP Error ${statusText} (${response.status})`);
-        error.status = response.statusText;
-        error.response = response;
-        console.log(error);
-        throw error;
+export function checkStatus(response, data) {
+  if (response.status >= 200 && response.status < 300) {
+    return response;
+  } else {
+    let errorMessage = `HTTP Error ${response.status} (${response.statusText})`;
+
+    if (data && Array.isArray(data.Errors) && data.Errors.length > 0) {
+      errorMessage = data.Errors.join(", "); // ✅ Extraemos correctamente el error
     }
+
+    const error = new Error(errorMessage);
+    error.status = response.status;
+    error.response = response;
+    console.error(error);
+    throw error;
+  }
 }
+
 // METODO FETCH created on Jan/14/25
 export async function fetchFromAPI(URL, method, requestBody) {
   try {
@@ -19,10 +24,10 @@ export async function fetchFromAPI(URL, method, requestBody) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(requestBody)
     });
-    checkStatus(response);
     const contentType = response.headers.get('Content-Type');
     if (contentType && contentType.includes('application/json')) {
       const data = await response.json();
+      checkStatus(response, data);
       // console.log("Base.js: Datos procesados de la respuesta (JSON) -->", data);
       return data;
     } 
