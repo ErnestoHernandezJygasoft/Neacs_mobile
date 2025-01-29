@@ -62,22 +62,22 @@ const UsersView = () => {
   return (
     <View>
       {/* Header */}
-      <View style={styles.card}>
-      <View style={styles.cardHeader}>
-        <View style={styles.cardTitle}>
-          <Icon style={styles.searchIcon} name="magnify" size={20} color="#000"/>
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Buscar"
-            onChangeText={(text) => handleInputChange('search', text)}
-            onBlur={() => {
-              setSearch('');
-              setPage(1);
-            }}
-          />
+      <View style={[styles.card, isLandscape && styles.cardLandscape]}>
+        <View style={styles.cardHeader}>
+          <View style={styles.cardTitle}>
+            <Icon style={styles.searchIcon} name="magnify" size={20} color="#000"/>
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Buscar"
+              onChangeText={(text) => handleInputChange('search', text)}
+              onBlur={() => {
+                setSearch('');
+                setPage(1);
+              }}
+            />
+          </View>
         </View>
-      </View>
-      {/* MODAL */}
+        {/* MODAL */}
       </View>
       {/* Datatable */}
       <View style={styles.datatableCard}>
@@ -134,6 +134,10 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     elevation: 3,
     padding: 16,
+  },
+  cardLandscape: {
+    margin: 8,
+    padding: 8,
   },
   datatableCard: {
     margin: 10,

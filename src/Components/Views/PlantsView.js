@@ -88,7 +88,7 @@ const PlantsView = () => {
 
 const styles = StyleSheet.create({
   card: {
-    margin: 16,
+    margin: 10,
     backgroundColor: '#fff',
     borderRadius: 8,
     elevation: 3,
