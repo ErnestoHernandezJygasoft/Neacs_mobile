@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, Text, StyleSheet, ScrollView, FlatList, ActivityIndicator} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { getPagin } from '../../Shared/Base';
+import { get, getPagin } from '../../Shared/Base';
 
 const GroupsView = () => {
   //Barra de busqueda
@@ -19,10 +19,26 @@ const GroupsView = () => {
   const [totalPages, setTotalPages] = useState(0);
   const recordsPerPage = 10; 
 
+  //Otros datos 
+  const [workSchemes, setWorkSchemes] = useState([]);
+  const [plants , setPlants] = useState([]);
+
   //Carga de datos
   useEffect(() => {
     getPagin('http://192.168.20.244:5000/api/Group',page, setTotalPages, setData, setLoading, recordsPerPage);
-    }, [page]
+    const fetchDataNames = async () => {
+      try {
+        const workschemesResult = await get('http://192.168.20.244:5000/api/WorkSchemes'); 
+        setWorkSchemes(workschemesResult.result); 
+        const plantsResult = await get('http://192.168.20.244:5000/api/Plants'); 
+        setPlants(plantsResult.result); 
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchDataNames();
+    }, [page],
+    
   );
 
   // Filtrar los datos según la búsqueda
@@ -44,13 +60,17 @@ const GroupsView = () => {
   };
 
   //Parametros a mostrar
-  const renderItem = ({ item }) => (
-    <View style={styles.row}>
-      <Text style={styles.cell}>{item.name}</Text>
-      <Text style={styles.cell}>{item.idWorkScheme}</Text>
-      <Text style={styles.cell}>{item.idPlant}</Text>
-    </View>
-  );
+  const renderItem = ({ item }) => {
+    const workScheme = workSchemes.find(ws => ws.id === item.idWorkScheme);
+    const plant = plants.find(p => p.id ===item.idPlant)
+    return (
+      <View style={styles.row}>
+        <Text style={styles.cell}>{item.name}</Text>
+        <Text style={styles.cell}>{workScheme ? workScheme.name : 'No disponible'}</Text>
+        <Text style={styles.cell}>{plant ? plant.name : 'No disponible'}</Text>
+      </View>
+    );
+  };
 
   //AQUI IRIA MODALCONFIG
   
@@ -74,8 +94,8 @@ const GroupsView = () => {
       <View style={styles.card}>
             <View style={styles.headerRow}>
               <Text style={styles.headerCell}>Nombre</Text>
-              <Text style={styles.headerCell}>Id del workscheme</Text>
-              <Text style={styles.headerCell}>Id de Planta</Text>
+              <Text style={styles.headerCell}>Nombre del workscheme</Text>
+              <Text style={styles.headerCell}>Nombre de Planta</Text>
             </View>
             <FlatList
               data={filteredData}

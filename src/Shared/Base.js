@@ -37,14 +37,15 @@ export async function fetchFromAPI(URL, method, requestBody) {
 }
 
 //Funcion get para volumenes de datos chicos created on Jan/14/25
-export async function get(URL){
-    try {
+export async function get(URL){  
+  try {
         const response = await fetch(URL,{
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
         })
-        checkStatus(response);
         data = await response.json();
+        // console.log("Base.js: Datos procesados de la respuesta (JSON) -->", data);
+        checkStatus(response, data);
         return data;
     } catch (error) {
         throw error
@@ -52,9 +53,6 @@ export async function get(URL){
 }
 
 //METODO getPagin PARA DATATABLES 
-  /* Para el proyecto de NEACS 'apiUrl' solo necesita api/entidad, no es necesario agregar '/getPagin'
-     ej: http://localhost:5000/api/Entidad
-  */
 export async function getPagin(apiUrl, page, setTotalPages, setData, setLoading, recordsPerPage) {
   const url = `${apiUrl}/getPagin`;
   setLoading(true);
