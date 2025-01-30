@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, Text, StyleSheet, ScrollView, FlatList, ActivityIndicator} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { get, getPagin } from '../../Shared/Base';
+import { get, getPagin, paginSearch } from '../../Shared/Base';
 
 const GroupsView = () => {
   //Barra de busqueda
@@ -12,6 +12,7 @@ const GroupsView = () => {
       setSearch(value);
     }
   };
+
   //Datatable
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -42,22 +43,14 @@ const GroupsView = () => {
   );
 
   // Filtrar los datos según la búsqueda
-  useEffect(() => {
-    if (search.trim() === '') {
-      setFilteredData(data); 
-    } else {
-      const filtered = data.filter((item) =>
-        item.name.toLowerCase().includes(search.toLowerCase()) ||
-        item.idWorkScheme.toLowerCase().includes(search.toLowerCase())
-      );
-      setFilteredData(filtered); 
-    }
-  }, [search, data]);
-  const loadMore = () => {
-    if (page < totalPages) {
-      setPage(page + 1);
-    }
-  };
+    useEffect(() => {
+      if (search.trim() === '') {
+        const noSearch = data.slice((page - 1) * recordsPerPage, page * recordsPerPage);
+        setFilteredData(noSearch); 
+      } else {
+        paginSearch('http://192.168.20.244:5000/api/Group', 'name', search, page, setTotalPages, setFilteredData, setLoading, recordsPerPage);
+      }
+    }, [search, data, page]);
 
   //Parametros a mostrar
   const renderItem = ({ item }) => {
@@ -71,7 +64,11 @@ const GroupsView = () => {
       </View>
     );
   };
-
+  const loadMore = () => {
+    if (page < totalPages) {
+      setPage(page + 1);
+    }
+  };
   //AQUI IRIA MODALCONFIG
   
   return (

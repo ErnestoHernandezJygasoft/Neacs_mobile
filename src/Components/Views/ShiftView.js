@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, Text, StyleSheet, ScrollView, FlatList, ActivityIndicator} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { getPagin } from '../../Shared/Base';
+import { getPagin, paginSearch } from '../../Shared/Base';
 
 const ShiftView = () => {
   //Barra de busqueda
@@ -28,20 +28,12 @@ const ShiftView = () => {
   // Filtrar los datos según la búsqueda
   useEffect(() => {
     if (search.trim() === '') {
-      setFilteredData(data); 
+      const noSearch = data.slice((page - 1) * recordsPerPage, page * recordsPerPage);
+      setFilteredData(noSearch); 
     } else {
-      const filtered = data.filter((item) =>
-        item.idShiftPattern.toLowerCase().includes(search.toLowerCase()) ||
-        item.description.toLowerCase().includes(search.toLowerCase())
-      );
-      setFilteredData(filtered); 
+      paginSearch('http://192.168.20.244:5000/api/ShiftPatterns', 'name', search, page, setTotalPages, setFilteredData, setLoading, recordsPerPage);
     }
-  }, [search, data]);
-  const loadMore = () => {
-    if (page < totalPages) {
-      setPage(page + 1);
-    }
-  };
+  }, [search, data, page]);
 
   //Parametros a mostrar
   const renderItem = ({ item }) => (
@@ -51,6 +43,11 @@ const ShiftView = () => {
       <Text style={styles.cell}>{item.description}</Text>
     </View>
   );
+  const loadMore = () => {
+    if (page < totalPages) {
+      setPage(page + 1);
+    }
+  };
 
   //AQUI IRIA MODALCONFIG
   
